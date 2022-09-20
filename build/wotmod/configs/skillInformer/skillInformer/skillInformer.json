@@ -1,0 +1,60 @@
+﻿{
+    "background": true,
+    "background_alpha": 0.5,
+    "buttonReset": [211, -3],
+    "buttonShow": [24],
+    "buttonSizeDown": [209, -1],
+    "buttonSizeUp": [201, -1],
+    "color": "0xF8F400",
+    "configPath": "mods/configs/skillInformer",
+    "enabled": true,
+    "equipPath": "../maps/icons/artefact",
+    "equip_mainPath": "../maps/icons/artefact/empty.png",
+    "font": "$FieldFont",
+    "fontSize": 22,
+    "img": {
+        "alpha": 1.0,
+        "height": 43,
+        "indentX": 9,
+        "indentY": 18,
+        "width": 43
+    },
+    "img_default": {
+        "alpha": 1.0,
+        "height": 48,
+        "indentX": 10,
+        "indentY": 20,
+        "width": 48
+    },
+    "lock": false,
+    "panel": {
+        "alignX": "left",
+        "alignY": "top",
+        "border": true,
+        "drag": true,
+        "height": 427,
+        "width": 312,
+        "x": 409.0,
+        "y": 604
+    },
+    "panel_bgPath": "../maps/icons/windows/window_bg/centered.png",
+    "saveSession": true,
+    "shadow": true,
+    "sizePercent": 90,
+    "skill_lockPath": "../maps/icons/components/countdown/lock.png",
+    "skillsPath": "../maps/icons/battlePass/tooltips/icons",
+    "skills_ness_complete": [
+        "commander_expert",
+        "commander_sixthSense",
+        "driver_tidyPerson",
+        "gunner_rancorous",
+        "gunner_sniper",
+        "loader_desperado",
+        "loader_intuition",
+        "loader_pedant",
+        "radioman_lastEffort"
+    ],
+    "tankmanPath": "../maps/icons/tankmen/roles/big",
+    "visible": false,
+    "withEquipment": true
+}

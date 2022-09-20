@@ -1,0 +1,6 @@
+[submodule "core"]
+	path = core
+	url = https://github.com/PolyacovYury/PYmods.git
+[submodule "GUIFlash"]
+	path = GUIFlash
+	url = https://github.com/CH4MPi/GUIFlash.git
