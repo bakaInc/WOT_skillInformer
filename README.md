@@ -1,1 +1,1 @@
-"# WOT_skillInformer" 
+# WOT_skillInformer
