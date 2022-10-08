@@ -313,10 +313,6 @@ def checkKeysUp(keys, event, modifiers):
                 keys_orig.append(key)
 
         if BigWorld.keyToString(event.key) in modify_keys:
-            print 'modifier main key', keys_orig, keys_modifiers, modify_keys
-            print bool(keys) and (not bool(keys_orig) or all(BigWorld.isKeyDown(x) for x in keys_orig))
-            print bool(keys_modifiers) and bool(modifiers) and all(x in modifiers for x in keys_modifiers)
-
             return (bool(keys)
                     and (not bool(keys_orig) or all(BigWorld.isKeyDown(x) for x in keys_orig))
                     and bool(keys_modifiers) and bool(modifiers) and all(x in modifiers for x in keys_modifiers)
@@ -502,7 +498,6 @@ class FlashController(object):
             self.setVisible(True)
 
         if checkKeysUp(config_.data['buttonMove'], event, modifiers):
-            print 'buttonMove checkKeysUp'
             if not config_.data['lock']:
                 self.setVisible(False)
 
@@ -642,7 +637,6 @@ flashController = FlashController(config_.ID)
 def new_PlayerAvatar__startGUI(_):
     skill_handler.build_main_view()
     flashController.startBattle()
-
 
 
 @registerEvent(PlayerAvatar, '_PlayerAvatar__destroyGUI')
