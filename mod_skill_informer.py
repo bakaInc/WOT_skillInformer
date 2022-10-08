@@ -11,26 +11,27 @@ import Keys
 from Avatar import PlayerAvatar
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
-from gui import InputHandler, g_guiResetters
 from PlayerEvents import g_playerEvents
 from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.shared.utils.requesters.itemsrequester import RequestCriteria, PredicateCondition
 #
 from OpenModsCore import SimpleConfigInterface
 from gui import InputHandler
+from gui import g_guiResetters
 from gui.mods.gambiter import g_guiFlash, utils
 from gui.mods.gambiter.flash import COMPONENT_TYPE, COMPONENT_ALIGN, COMPONENT_EVENT
 from gui.mods.gambiter.utils import registerEvent
 
 
-class SkillHandler:
+class SkillHandler(object):
+    __slots__ = ('g_tanksMainList', 'maxSkillCount', 'tankmensShownCnt')
+
     def __init__(self):
         self.g_tanksMainList = OrderedDict()
         self.maxSkillCount = 0
         self.tankmensShownCnt = 0
 
     def load_session(self):
-        print 'load session'
         config_path = '%s/CrewSkillInformerSession.json' % config_.data['configPath']
         if os.path.getsize(config_path) > 0:
             with open(config_path) as jsonData:
@@ -38,7 +39,6 @@ class SkillHandler:
 
     def replace_session(self):
         config_path = '%s/CrewSkillInformerSession.json' % config_.data['configPath']
-        print 'gui_mods path', config_path
         with open(config_path, 'w+') as outfile:
             outfile.seek(0)
             json.dump(self.g_tanksMainList, outfile, sort_keys=True, indent=4)  # FIXME pickle dump/load
@@ -139,6 +139,7 @@ class SkillHandler:
                     'loader': 5,
                     'loaderTwo': 6
                 }
+
                 tankCrewSkillsList = OrderedDict(sorted(tankCrewSkillsList.iteritems(),
                     key=lambda x: priority[x[0]]))
 
@@ -152,10 +153,12 @@ class SkillHandler:
 
 skill_handler = SkillHandler()
 flashController = None
-g_playerEvents.onQueueInfoReceived += skill_handler.onCurrentVehicleChanged
+g_playerEvents.onEnqueued += skill_handler.onCurrentVehicleChanged
 
 
 class Config(SimpleConfigInterface):
+    __slots__ = ('ID', 'version', 'author', 'modsGroup', 'modSettingsID', 'save_config', 'buttons', 'data', 'i18n')
+
     def __init__(self):
         super(Config, self).__init__()
 
@@ -310,9 +313,13 @@ def checkKeysUp(keys, event, modifiers):
                 keys_orig.append(key)
 
         if BigWorld.keyToString(event.key) in modify_keys:
+            print 'modifier main key', keys_orig, keys_modifiers, modify_keys
+            print bool(keys) and (not bool(keys_orig) or all(BigWorld.isKeyDown(x) for x in keys_orig))
+            print bool(keys_modifiers) and bool(modifiers) and all(x in modifiers for x in keys_modifiers)
+
             return (bool(keys)
                     and (not bool(keys_orig) or all(BigWorld.isKeyDown(x) for x in keys_orig))
-                    and (bool(keys_modifiers) and bool(modifiers) and all(x in modifiers for x in keys_modifiers))
+                    and bool(keys_modifiers) and bool(modifiers) and all(x in modifiers for x in keys_modifiers)
                     )
 
         return (bool(keys) and event.key in keys
@@ -323,6 +330,7 @@ def checkKeysUp(keys, event, modifiers):
 
 
 class FlashController(object):
+    __slots__ = ('ID', 'items')
     settingsCore = dependency.descriptor(ISettingsCore)
 
     def __init__(self, ID):
@@ -481,7 +489,7 @@ class FlashController(object):
         if not config_.data['enabled']: return
         player = BigWorld.player()
         if not player.arena: return
-        # if player.arena.bonusType != ARENA_BONUS_TYPE.REGULAR: return
+
         modifiers = set()
         if event.isAltDown(): modifiers.add(-1)  # -4
         if event.isCtrlDown(): modifiers.add(-2)  # -2
@@ -494,6 +502,7 @@ class FlashController(object):
             self.setVisible(True)
 
         if checkKeysUp(config_.data['buttonMove'], event, modifiers):
+            print 'buttonMove checkKeysUp'
             if not config_.data['lock']:
                 self.setVisible(False)
 
@@ -631,8 +640,9 @@ flashController = FlashController(config_.ID)
 
 @registerEvent(PlayerAvatar, '_PlayerAvatar__startGUI')
 def new_PlayerAvatar__startGUI(_):
-    flashController.startBattle()
     skill_handler.build_main_view()
+    flashController.startBattle()
+
 
 
 @registerEvent(PlayerAvatar, '_PlayerAvatar__destroyGUI')
